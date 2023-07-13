@@ -86,10 +86,10 @@ onMounted(() => {
     v-show="data.url"
   >
     <n-tab-pane name="images" tab="图片">
-      <n-image v-for="i in data.images" :src="'/api' + i" />
+      <n-image v-for="i in data.images" :src="i" />
     </n-tab-pane>
     <n-tab-pane name="pdfs" tab="PDF">
-      <iframe v-for="i in data.pdfs" :src="'/api' + i" />
+      <iframe v-for="i in data.pdfs" :src="i" />
     </n-tab-pane>
   </n-tabs>
 </template>
