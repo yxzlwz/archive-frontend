@@ -13,6 +13,7 @@
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^4.2.3",
+    "axios": "^1.4.0",
     "naive-ui": "^2.34.4",
     "sass": "^1.63.6",
     "vite": "^4.4.0",

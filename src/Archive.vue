@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import {
   NButton,
   NTabs,
@@ -9,9 +9,12 @@ import {
   NCheckbox,
   NImage,
   useMessage,
+  NAutoComplete,
 } from 'naive-ui';
 import store from './plugins/store';
+import { Axios } from './plugins/axios';
 const message = useMessage();
+window.message = message;
 
 const archiveConfig = ref({
   url: '',
@@ -19,33 +22,58 @@ const archiveConfig = ref({
   optimize: true,
 });
 const submitUrl = () => {
-  fetch('/api/create/', {
-    method: 'POST',
-    body: JSON.stringify(archiveConfig.value),
-  })
-    .then(res => res.json())
-    .then(res => {
-      if (res.status === 'success') {
-        message.success('提交成功');
-      } else {
-        message.error('提交失败');
-      }
-    });
+  if (archiveConfig.value.url.indexOf('http') !== 0) {
+    archiveConfig.value.url = 'http://' + archiveConfig.value.url;
+  }
+  Axios.post('/create/', archiveConfig.value).then(res => {
+    if (res.status === 'success') {
+      message.success('提交成功');
+    }
+  });
 };
+
 const checkUrl = ref(''),
   data = ref({});
+const searchList = ref([]);
+let searching = null;
+const doSearch = () => {
+  Axios.get('/search/', {
+    params: { key: checkUrl.value },
+  }).then(response => {
+    const data = response.by_title.concat(response.by_url);
+    const res = [];
+    for (const i of data) {
+      res.push({
+        label: `${i.title} | ${i.url}`,
+        value: i.id,
+      });
+    }
+    searchList.value = res;
+  });
+};
+watch(checkUrl, () => {
+  if (searching) {
+    clearTimeout(searching);
+  }
+  searching = setTimeout(doSearch, 500);
+});
 const getUrl = () => {
-  fetch('/api/get/?url=' + btoa(checkUrl.value))
-    .then(res => res.json())
-    .then(res => {
-      if (res.status === 'success') {
-        data.value = res;
-      } else if (res.status === 'error') {
-        message.error(res.message);
-      } else {
-        message.error('查询失败');
-      }
+  clearTimeout(searching);
+  setTimeout(() => {
+    if (checkUrl.value.includes(' | ')) {
+      checkUrl.value = checkUrl.value.split(' | ')[1];
+    }
+    if (checkUrl.value.indexOf('http') !== 0) {
+      checkUrl.value = 'http://' + checkUrl.value;
+    }
+    checkUrl.value = checkUrl.value.trim();
+    setTimeout(() => {
+      clearTimeout(searching);
+    }, 100);
+    Axios.get('/get/', { params: { url: checkUrl.value } }).then(res => {
+      data.value = res;
     });
+  }, 100);
 };
 
 onMounted(() => {
@@ -63,18 +91,26 @@ onMounted(() => {
       type="text"
       placeholder="请输入要存档的URL"
     />
-    <n-checkbox v-model:checked="archiveConfig.lazyload">
-      处理懒加载
-    </n-checkbox>
-    <n-checkbox v-model:checked="archiveConfig.optimize"> 优化网页 </n-checkbox>
+    <div class="config">
+      <n-checkbox v-model:checked="archiveConfig.lazyload">
+        处理懒加载
+      </n-checkbox>
+      <n-checkbox v-model:checked="archiveConfig.optimize">
+        启用针对性优化
+      </n-checkbox>
+    </div>
     <n-button type="primary" @click="submitUrl"> 存档 </n-button>
   </div>
   <n-divider />
-  <div class="submit-url">
-    <n-input
+  <div class="check-url">
+    <n-auto-complete
       v-model:value="checkUrl"
-      type="text"
+      :input-props="{
+        autocomplete: 'disabled',
+      }"
+      :options="searchList"
       placeholder="请输入要查询的URL"
+      @select="getUrl"
     />
     <n-button type="primary" @click="getUrl"> 查询 </n-button>
   </div>
@@ -97,11 +133,17 @@ onMounted(() => {
 <style lang="scss">
 .submit-url {
   width: 100%;
-  text-align: center;
   .n-input {
-    text-align: left;
-    width: 60%;
-    margin-right: 10px;
+    margin-bottom: 10px;
+  }
+  .config {
+    margin-bottom: 10px;
+  }
+}
+.check-url {
+  width: 100%;
+  .n-input {
+    margin-bottom: 10px;
   }
 }
 .n-image {
