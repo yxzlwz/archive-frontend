@@ -30,9 +30,9 @@ Axios.get('https://api.yixiangzhilv.com/yiyan/sentence/get/').then(res => {
     <router-link to="/list">
       <n-button strong round size="large" :type="color[2]"> 看一看 </n-button>
     </router-link>
-    <n-button strong round size="large" :type="color[3]" disabled>
-      随便走走
-    </n-button>
+    <router-link to="/about">
+      <n-button strong round size="large" :type="color[3]"> 你们是? </n-button>
+    </router-link>
   </n-space>
 
   <n-gradient-text

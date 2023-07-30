@@ -29,7 +29,7 @@ Axios.interceptors.response.use(
     return data;
   },
   response => {
-    window.message.error(response.message);
+    // window.message.error(response.message);
   }
 );
 

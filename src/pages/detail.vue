@@ -16,7 +16,7 @@ import {
 
 const route = useRoute();
 const id = route.params.id;
-const data = ref({});
+const data = ref({ images: [] });
 
 Axios.get(`/page/${id}/`).then(res => {
   data.value = res;
@@ -103,7 +103,7 @@ const _ = value => {
         </tbody>
       </n-table>
     </n-collapse-item>
-    <n-collapse-item title="截图" name="3" class="screenshot">
+    <n-collapse-item title="截图" name="3" :disabled="data.images.length === 0">
       <n-image
         v-for="i in data.images"
         :src="i"
@@ -122,6 +122,7 @@ iframe {
   width: 90vw;
   height: 90vh;
 }
+
 a {
   color: var(--n-text-color);
   text-decoration: none;

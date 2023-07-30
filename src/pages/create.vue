@@ -1,15 +1,33 @@
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
-import { NButton, NInput, NCheckbox, NSpace } from 'naive-ui';
+import { ref } from 'vue';
+import {
+  NButton,
+  NInput,
+  NCheckbox,
+  NSpace,
+  NModal,
+  NCard,
+  NSpin,
+} from 'naive-ui';
 import { Axios } from '@/plugins/axios';
+import router from '../router';
 
 const archiveConfig = ref({
   url: '',
   lazyload: true,
   optimize: true,
 });
-const disable = ref(false);
-
+const disable = ref(false),
+  waiting = ref(false);
+let id, interval;
+const check = () => {
+  Axios.get(`/page/${id}/check/`).then(res => {
+    if (res.status === 'success') {
+      clearInterval(interval);
+      router.push(`/detail/${id}`);
+    }
+  });
+};
 const submit = () => {
   if (archiveConfig.value.url.indexOf('http') !== 0) {
     archiveConfig.value.url = 'http://' + archiveConfig.value.url;
@@ -18,7 +36,9 @@ const submit = () => {
   Axios.post('/page/', archiveConfig.value)
     .then(res => {
       if (res.status === 'success') {
-        message.success('提交成功，正在处理中...');
+        waiting.value = true;
+        id = res.id;
+        interval = setInterval(check, 5000);
       }
     })
     .catch(err => {
@@ -53,6 +73,23 @@ const submit = () => {
       存档
     </n-button>
   </div>
+
+  <n-modal v-model:show="waiting" :mask-closable="false">
+    <n-card
+      style="width: 50vw; text-align: center"
+      title="正在存档内容，请稍后..."
+      :bordered="false"
+      size="huge"
+      role="dialog"
+      aria-modal="true"
+    >
+      <n-spin show>
+        <template #description>
+          你可以随时离开此界面；若2分钟未跳转请检查列表或重新提交
+        </template>
+      </n-spin>
+    </n-card>
+  </n-modal>
 </template>
 
 <style lang="scss">
