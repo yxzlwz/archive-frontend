@@ -121,7 +121,7 @@ search();
   object-fit: cover;
 }
 a {
-  color: black;
+  color: var(--n-text-color);
   text-decoration: none;
 }
 </style>

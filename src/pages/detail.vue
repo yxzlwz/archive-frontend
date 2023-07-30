@@ -126,7 +126,7 @@ iframe {
   height: 90vh;
 }
 a {
-  color: black;
+  color: var(--n-text-color);
   text-decoration: none;
 }
 </style>
