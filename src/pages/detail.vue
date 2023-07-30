@@ -103,8 +103,13 @@ const _ = value => {
         </tbody>
       </n-table>
     </n-collapse-item>
-    <n-collapse-item title="截图" name="3">
-      <n-image v-for="i in data.images" :src="i" />
+    <n-collapse-item title="截图" name="3" class="screenshot">
+      <n-image
+        v-for="i in data.images"
+        :src="i"
+        style="display: flex; justify-content: center"
+        :img-props="{ style: 'width: 70vw' }"
+      />
     </n-collapse-item>
     <n-collapse-item title="PDF" name="4">
       <iframe v-for="i in data.pdfs" :src="i" />
@@ -113,14 +118,6 @@ const _ = value => {
 </template>
 
 <style scoped lang="scss">
-.n-image {
-  justify-content: center;
-  width: 100%;
-  img {
-    width: 60vw !important;
-    margin: auto;
-  }
-}
 iframe {
   width: 90vw;
   height: 90vh;
@@ -128,5 +125,11 @@ iframe {
 a {
   color: var(--n-text-color);
   text-decoration: none;
+}
+</style>
+
+<style>
+.n-image {
+  justify-content: center;
 }
 </style>
