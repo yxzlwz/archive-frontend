@@ -1,5 +1,4 @@
 <script setup>
-import { ref } from 'vue';
 import {
   NMessageProvider,
   NGlobalStyle,
@@ -13,7 +12,7 @@ import {
   dateZhCN,
 } from 'naive-ui';
 import store from './plugins/store';
-import Archive from './Archive.vue';
+import NaiveMessage from './plugins/NaiveMessage.vue';
 </script>
 
 <template>
@@ -24,9 +23,12 @@ import Archive from './Archive.vue';
   >
     <n-message-provider>
       <n-global-style />
+      <NaiveMessage />
       <n-layout style="min-height: 100vh">
         <n-layout-header bordered>
-          <h2 id="page-title">网页存档By异想之旅</h2>
+          <router-link to="/">
+            <h2 id="page-title">网页存档</h2>
+          </router-link>
           <n-button
             quaternary
             @click="store.commit('changeTheme')"
@@ -35,8 +37,10 @@ import Archive from './Archive.vue';
             {{ store.state.theme === 'dark' ? '浅色' : '深色' }}
           </n-button>
         </n-layout-header>
-        <n-layout-content content-style="padding: 24px;">
-          <Archive />
+        <n-layout-content content-style="padding: 24px 3vw;">
+          <router-view v-slot="{ Component }">
+            <component :is="Component" />
+          </router-view>
         </n-layout-content>
       </n-layout>
     </n-message-provider>
@@ -51,6 +55,7 @@ import Archive from './Archive.vue';
   padding: 0 20px;
   #page-title {
     display: inline-block;
+    color: var(--n-text-color);
   }
   #change-theme {
     float: right;
