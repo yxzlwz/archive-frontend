@@ -25,23 +25,28 @@ Axios.get('https://api.yixiangzhilv.com/yiyan/sentence/get/').then(res => {
 
   <n-space justify="center" :size="30">
     <router-link to="/create">
-      <n-button strong round size="large" :type="color[1]"> 去存档 </n-button>
+      <n-button strong round size="large" :type="color[0]"> 去存档 </n-button>
     </router-link>
     <router-link to="/list">
-      <n-button strong round size="large" :type="color[2]"> 看一看 </n-button>
+      <n-button strong round size="large" :type="color[1]"> 看一看 </n-button>
     </router-link>
     <router-link to="/about">
-      <n-button strong round size="large" :type="color[3]"> 你们是? </n-button>
+      <n-button strong round size="large" :type="color[2]"> 你们是? </n-button>
     </router-link>
+    <a href="https://github.com/yxzlwz/archive-frontend" target="_blank">
+      <n-button strong round size="large" :type="color[3]"> 太酷了! </n-button>
+    </a>
   </n-space>
 
-  <n-gradient-text
-    id="yiyan"
-    :type="color[4]"
-    :style="{ transition: 'all 0.5s', opacity: yiyan ? 1 : 0 }"
-  >
-    {{ yiyan }}
-  </n-gradient-text>
+  <div>
+    <n-gradient-text
+      id="yiyan"
+      :type="color[4]"
+      :style="{ transition: 'all 0.5s', opacity: yiyan ? 1 : 0 }"
+    >
+      {{ yiyan }}
+    </n-gradient-text>
+  </div>
 </template>
 
 <style lang="scss">

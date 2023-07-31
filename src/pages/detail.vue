@@ -74,6 +74,7 @@ const _ = value => {
             <th>爬取完成时间</th>
             <th>代理</th>
             <th>爬取引擎</th>
+            <th>爬取用时(秒)</th>
             <th>真实URL</th>
           </tr>
         </thead>
@@ -87,6 +88,7 @@ const _ = value => {
             </td>
             <td>{{ _(data.crawl_task.detail.proxy) }}</td>
             <td>{{ _(data.crawl_task.detail.engine) }}</td>
+            <td>{{ _(data.crawl_task.detail.time) }}</td>
             <td>
               <n-ellipsis style="max-width: 20vw">
                 <a :href="data.crawl_task.detail.genuine_url" target="_blank">
